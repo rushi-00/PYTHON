@@ -5,6 +5,7 @@ for num in range(0,10):
     lst.append(num)
 print(lst)
 
+
 #list comprehension [interveiw]
 #we can write same method using list comprehension
 #code optimization
