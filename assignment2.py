@@ -8,7 +8,7 @@ a consonant. Otherwise your program should display a message indicating that the
 letter is a consonant.
 
 """
-
+ 
 def check_vowel(letter):
     if letter.lower() in ['a', 'e', 'i', 'o', 'u']:
         print("letter is a vowel.")
