@@ -3,6 +3,7 @@
 #the series object also has a few more bits
 #of data, including an index and a name.
 
+
 import pandas as pd
 songs2 = pd.Series([145 , 142, 38 , 13], name = 'counts')
 #It is easy to inspect the index of a series 
