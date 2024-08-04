@@ -1,0 +1,125 @@
+#A series is used to model one dimensional data,
+#similar to a list in python
+#the series object also has a few more bits
+#of data, including an index and a name.
+
+import pandas as pd
+songs2 = pd.Series([145 , 142, 38 , 13], name = 'counts')
+#It is easy to inspect the index of a series 
+songs2.index
+#the index can be string based as well
+#in which case pandas indicates
+#that the datatype for the index is object(not string)
+songs3 = pd.Series([145 , 142 , 38 , 13],name='counts',
+   index = ['paul' , 'john' , 'George' , 'Ringo'])
+songs3.index
+songs3
+
+
+#---------------------------------------------------
+#numeric column will become NaN.
+import pandas as pd
+f1 = pd.read_csv('age.csv')
+f1
+
+df=pd.read_excel('E:/DATA SCIENCE 24/1-Python/Python_for_data_science/Bahaman.xlsx')
+#the series object behaves similary to a numpy array
+
+import numpy as np
+numpy_ser = np.array([145 , 142 , 38 , 13])
+songs3[1]
+#142
+numpy_ser[1]
+#they both have methods in common
+songs3.mean()
+numpy_ser.mean()
+
+#--------------------------------------------------
+#Pandas series data structure provides support for the basic CRUD operations
+#CREATE , READ , UPDATE , DELETE
+#CREATE
+george=pd.Series(["mustang" , "Cadillac" , "ferrari" , "porsche"],
+index = ['1968' , '1969' , '1970' , '1970'],
+name='classics')
+george
+                
+#The previous example illustates an interesting feature of pandas-the
+#index values are strings and they are not unique.this can cause some confusion
+#but can also be useful when duplicate index items are needed.
+#---------------------------------------------------
+#Updating
+#Updating values in a series can be a little tricky as well.
+#To update a value for a given index label, the standard index assignment operation works
+george['1969'] = 68
+george['1969']
+george
+#Deletion
+s=pd.Series([2,3,4], index=[1,2,3])
+del s[1]
+s
+
+#----------------------------------------------------
+#covert types
+#string- use.astype(str)
+#numeric- use pd.to_numeric
+#interger- use.astype(int),
+#note that this will fail with Nan
+#datetime- use pd.to_datetime
+
+songs_66 = pd.Series([3.0,None,11.0,9.0],
+index= ['george', 'ringo' ,'john','paul'],
+name='counts')
+songs_66.dtypes
+#dtype('float64') 
+pd.to_numeric(songs_66.apply(str))
+#there will be error
+pd.to_numeric(songs_66.astype(str),errors='coerce')
+#If we pass errors='coerce',
+#we can see that it supports many formats
+songs_66.dtypes
+#dealing with none
+#the .fillna method will replace them with a given value,
+songs_66=songs_66.fillna(-1)
+songs_66=songs_66.astype(int)
+songs_66.dtypes
+
+#Nan values can be dropped from
+#the series using, dropna
+songs_66=pd.Series([3,None,11,9],
+index=['george','rushi','ani','aki'],
+name='counts')
+songs_66=songs_66.dropna()
+songs_66
+
+#Append,combining qnd joining two series
+songs_69=pd.Series([7,16,21,39],
+index=['kaka','mama','baba','chacha'],
+name='Counts')
+#to concatenate two series together, simply use the .append
+pd.concat([songs_66,songs_69])
+
+#-----------------------------------------------------------
+#Ploting series
+import matplotlib.pyplot as plt
+flg = plt.figure()
+songs_69.plot()
+plt.legend()
+
+fig=plt.figure()
+songs_69.plot(kind='bar')
+songs_69.plot(kind='bar',color='r')
+plt.legend()
+
+#Histogram
+import numpy as np
+data = pd.Series(np.random.randn(500),name='500_random')
+fig = plt.figure()
+ax = fig.add_subplot(111)
+data.hist()
+
+
+
+
+
+
+                
