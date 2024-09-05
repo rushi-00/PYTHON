@@ -5,6 +5,7 @@ Created on Wed Jul 31 08:32:29 2024
 @author: SATYAM
 """
 
+
 import pandas as pd
 
 df=pd.read_csv("C:/5-data_frame/ethnic diversity.csv")
