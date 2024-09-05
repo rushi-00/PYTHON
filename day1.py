@@ -1,0 +1,199 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Jul 31 08:32:29 2024
+
+@author: SATYAM
+"""
+
+import pandas as pd
+
+df=pd.read_csv("C:/5-data_frame/ethnic diversity.csv")
+
+df.dtypes
+
+df.Salaries=df.Salaries.astype(int)
+df.dtypes
+
+df.age=df.age.astype(float)
+df.dtypes
+#----------------------------------------------------------------
+df_new=pd.read_csv("C:/5-data_frame/education.csv")
+duplicate=df_new.duplicated()
+
+duplicate
+sum(duplicate)
+
+#----------------------------------------------------------------
+
+df_new1=pd.read_csv("C:/5-data_frame/mtcars_dup.csv")
+duplicate1=df_new1.duplicated()
+duplicate1
+sum(duplicate1)
+
+df_new2=df_new1.drop_duplicates()
+duplicate2=df_new2.duplicates()
+duplicate2
+sum(duplicate2)
+
+
+#----------------------------------------------------------------
+#outlier
+#trimming
+import pandas as pd
+import seaborn as sns
+df=pd.read_csv("C:/5-data_frame/ethnic diversity.csv")
+sns.boxplot(df.Salaries)
+sns.boxplot(df.age)
+
+IQR=df.Salaries.quantile(0.75) -df.Salaries.quantile(0.25)
+IQR
+
+
+lower_limit = df.Salaries.quantile(0.25)-1.5*IQR
+upper_limit = df.Salaries.quantile(0.75)+1.5*IQR
+
+
+#Triming
+
+import numpy as np
+
+outliers_df=np.where(df.Salaries>upper_limit,True,
+                     np.where(df.Salaries<lower_limit,True,False))
+
+df_trimmed=df.loc[~outliers_df]
+df.shape
+
+df_trimmed.shape
+
+sns.boxplot(df_trimmed.Salaries)
+
+
+df=pd.read_csv("C:/5-data_frame/ethnic diversity.csv")
+df.describe()
+
+df_replaced=pd.DataFrame(np.where(df.Salaries>upper_limit,upper_limit,np.where(df.Salaries<lower_limit,lower_limit,df.Salaries)))
+
+sns.boxplot(df_replaced[0])
+
+#----------------------------------------------------------------
+#winsorizer
+
+from feature_engine.outliers import Winsorizer
+winsor=Winsorizer(capping_method='iqr',
+                  tail='both',
+                  fold=1.5,
+                  variables=['Salaries'])
+
+df_t=winsor.fit_transform(df[['Salaries']])
+sns.boxplot(df['Salaries'])
+sns.boxplot(df_t['Salaries'])
+
+#--------------------------------------------------------------
+
+import pandas as pd
+df=pd.read_csv("C:/5-data_frame/ethnic diversity.csv")
+df.var()
+df.info()
+
+df.var()==0
+df.Salaries.var()==0
+
+#None of them are equal to zerp
+#df.var(axis=0)==0
+
+############################################################
+
+import pandas as pd
+import numpy as np
+
+df=pd.read_csv("C:/5-data_frame/modified ethnic.csv")
+df.isna().sum()
+
+#create an imputer that creates NaN values
+#mean and median is used for numeric data
+
+from sklearn.impute import SimpleImputer
+mean_imputer=SimpleImputer(missing_values=np.nan,strategy='mean')
+#check the data frame
+df["Salaries"]=pd.DataFrame(mean_imputer.fit_transform(df[['Salaries']]))
+df["Salaries"].isna().sum()
+#0
+
+#medain imputer
+median_imputer = SimpleImputer(missing_values=np.nan,strategy='median')
+#check the dataframe
+df['age']=pd.DataFrame(mean_imputer.fit_transform(df['age']))
+df['age'].isna().sum()
+
+#mode imputer
+mode_imputer = SimpleImputer(missing_values=np.nan,
+                             stratergy='most_frequent')
+
+#check the dataframe
+
+df['Sex']=pd.DataFrame(mode_imputer.fit_transform(df[['Sex']]))
+df['Sex'].isna().sum()
+
+#0
+df['MaritalDesc']=pd.DataFrame(mode_imputer.fit_transform(df[['Marital']]))
+df['MaritalDesc'].isna().sum()
+
+#############################################################333
+
+pip install imbalanced -learn scikit -learn
+import numpy as np
+from sklearn.datasets import make_classification
+from imblearn.over_sampling import SMOTE
+
+x,y = make_classification(n_samples=1000,n_features=20,
+                          n_informative=2, n_redundant=10,
+                          n_clusters_per_class=1,
+                          weights=[0.99], flip_y=0,
+                          random_state=1)
+
+'''n_feature=20:
+    The total numer of features (columns) in the dataset.
+    Each sample will have 20 features.
+    
+    n_informative=2:
+        The number of informative features.
+        These features are useful for predicting the target variable.
+        
+'''
+
+#show the original class distribution
+print("original class distribution" , np.bincount(y))
+
+#step 2:apply SMOTE to balance the dataset
+smote=SMOTE(random_state=42)
+x_res , y_res = smote.fit_resample(x,y)
+
+print("resampled class distribution :", np.bincount(y_res))
+
+#mode imputer
+mode_imputer=SimpleImputer(missing_values=np.nan, strategy='most_frequent')
+#check the dataframe
+df['Sex'] = pd.DataFrame(mode_imputer.fit_transform(df[['Sex']]))
+df['Sex'].isna().sum()
+
+print(f"Original class distribution: {np.bincount(y)}")
+from sklearn.model_selection import train_test_split
+#step2
+x_train, x_test, y_train, y_test = train_test_split(x,y,test_size=0.3, random_state=42)
+
+#step3
+smote=SMOTE(random_state=42)
+x_train_res, y_train_res = smote.fit_resample(x_train,y_train)
+
+#show the new class distribution after appyling SMOTE
+print(f"Resampled class distribution: {np.bincount(y_train_res)}")
+
+from sklearn.ensemble import RandomForestClassifier
+#step 4 : train a classifier on the balanced dataset
+clf.RandomForestClassifier(random_state=42)
+clf.fit(x_train_res,y_train_res)
+
+#step 5 : evaluate the classifier on the test set
+y_pred = clf.predict(x_test)
+
+print("Confusion Matrix : ")
