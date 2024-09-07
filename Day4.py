@@ -5,7 +5,7 @@ Created on Wed Apr 10 08:14:52 2024
 @author: rushi
 
 """
-
+ 
 #drop column
 
 import pandas as pd
